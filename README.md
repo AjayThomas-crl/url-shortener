@@ -1,62 +1,59 @@
-# FastAPI Project
+# URL Shortener
 
-This is a FastAPI project that serves as a template for building web applications using the FastAPI framework.
+A modern URL shortening service built with FastAPI and SQLAlchemy.
 
-## Project Structure
+## Features
 
-```
-fastapi-project
-├── app
-│   ├── main.py          # Entry point of the FastAPI application
-│   ├── api
-│   │   └── routes.py    # API routes for the application
-│   ├── models
-│   │   └── models.py     # Data models for the application
-│   └── schemas
-│       └── schemas.py    # Pydantic schemas for data validation and serialization
-├── requirements.txt      # Project dependencies
-├── README.md             # Project documentation
-└── .gitignore            # Files and directories to ignore by Git
-```
+- Shorten long URLs to easy-to-share links
+- Create custom short codes
+- Set expiration times for links
+- One-time use links that self-delete after access
+- QR code generation for shortened URLs
+- Admin dashboard to track link usage
 
-## Setup Instructions
+## Installation
 
-1. **Clone the repository:**
-   ```
-   git clone <repository-url>
-   cd fastapi-project
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/url-shortener.git
+   cd url-shortener
    ```
 
-2. **Create a virtual environment:**
-   ```
+2. Create a virtual environment and activate it:
+   ```bash
    python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Activate the virtual environment:**
-   - On Windows:
-     ```
-     venv\Scripts\activate
-     ```
-   - On macOS/Linux:
-     ```
-     source venv/bin/activate
-     ```
-
-4. **Install the dependencies:**
-   ```
+3. Install dependencies:
+   ```bash
    pip install -r requirements.txt
    ```
 
+4. Configure your database in `config.ini`
+
+5. Run the application:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+6. Visit http://localhost:8000 in your browser
+
 ## Usage
 
-To run the FastAPI application, execute the following command:
+- Enter a URL in the input field and click "Shorten"
+- Optionally set a custom code, expiration time, or one-time use flag
+- The shortened URL will be displayed along with a QR code
+- Visit the admin dashboard at http://localhost:8000/admin to see statistics
 
-```
-uvicorn app.main:app --reload
-```
+## Technologies
 
-Visit `http://127.0.0.1:8000/docs` to access the interactive API documentation.
+- FastAPI
+- SQLAlchemy
+- SQL Server
+- Jinja2 Templates
+- QR Code Generation
 
-## Contributing
+## License
 
-Contributions are welcome! Please open an issue or submit a pull request for any improvements or features.
+MIT

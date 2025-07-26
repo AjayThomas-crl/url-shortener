@@ -1,20 +1,61 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>URL Shortener</title>
-  <link rel="stylesheet" href="/static/style.css" />
+    <title>URL Shortener</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap">
+    <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>URL Shortener</h1>
-    <form method="post" action="/shorten">
-      <input type="text" name="long_url" placeholder="Paste your long URL" required />
-      <button type="submit">Shorten</button>
-    </form>
-
-    {% if short_url %}
-    <p>Shortened URL: <a href="{{ short_url }}">{{ short_url }}</a></p>
-    {% endif %}
-  </div>
+    <div class="card">
+        <h1>URL Shortener</h1>
+        
+        {% if error %}
+        <div class="error">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <form method="post" action="/shorten">
+            <div class="form-row">
+                <div class="input-group">
+                    <input type="text" name="long_url" placeholder="Paste your long URL" required />
+                </div>
+                <div class="input-group">
+                    <input type="text" name="custom_code" placeholder="Custom short code (optional)" />
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="input-group">
+                    <select name="expiration">
+                        <option value="0">No expiration</option>
+                        <option value="1">1 hour</option>
+                        <option value="24">1 day</option>
+                        <option value="168">7 days</option>
+                    </select>
+                </div>
+                
+                <div class="input-group checkbox-container">
+                    <input type="checkbox" id="one_time" name="one_time_use" value="true" />
+                    <label for="one_time">One-time use</label>
+                </div>
+                
+                <button type="submit">Shorten</button>
+            </div>
+        </form>
+        
+        {% if short_url %}
+        <div class="result">
+            <p>Your shortened URL:</p>
+            <a href="{{ short_url }}" class="short-url" target="_blank">{{ short_url }}</a>
+            
+            <div class="qr-code">
+                <img src="/qr/{{ short_code }}" alt="QR Code" />
+                <a href="/qr/{{ short_code }}" download="qr-code.png" class="download-link">Download QR Code</a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
 </body>
-</html
+</html>

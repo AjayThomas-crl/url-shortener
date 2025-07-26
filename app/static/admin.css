@@ -1,0 +1,68 @@
+.admin-card {
+    max-width: 1200px;
+    padding: 30px;
+}
+
+.dashboard {
+    margin-top: 30px;
+}
+
+.filters {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    color: #e2e8f0;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #334155;
+}
+
+th {
+    background-color: #334155;
+    font-weight: 600;
+}
+
+td {
+    color: #94a3b8;
+}
+
+tr:hover {
+    background-color: #334155;
+}
+
+td a {
+    color: #60a5fa;
+    text-decoration: none;
+}
+
+td a:hover {
+    color: #818cf8;
+    text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+    .admin-card {
+        padding: 15px;
+    }
+    
+    table {
+        font-size: 14px;
+    }
+    
+    th, td {
+        padding: 8px;
+    }
+    
+    .filters {
+        flex-direction: column;
+    }
+}
