@@ -34,7 +34,7 @@ def admin_dashboard(request: Request, db: Session = Depends(get_db)):
 
 # 3. QR code route - MOVE THIS BEFORE the {short_code} route
 @router.get("/qr/{short_code}")
-async def generate_qr(short_code: str):
+async def generate_qr(short_code: str, request: Request):
     """Generate QR code for a short URL"""
     print(f"🔳 Generating QR code for: {short_code}")
     
@@ -50,11 +50,11 @@ async def generate_qr(short_code: str):
             border=4,
         )
         
-        # Add the full URL data
-        base_url = "http://localhost:8000"
+        # Get base URL dynamically instead of hard-coding localhost
+        base_url = str(request.base_url).rstrip('/')
         short_url = f"{base_url}/{short_code}"
         
-        # Fix: Complete the add_data method call
+        # Add the URL data
         qr.add_data(short_url)
         qr.make(fit=True)
         
@@ -160,7 +160,8 @@ def shorten_url(
             {"request": request, "error": f"Database error: {str(e)}", "short_url": None}
         )
     
-    short_url = f"http://localhost:8000/{short_code}"
+    base_url = str(request.base_url).rstrip('/')
+    short_url = f"{base_url}/{short_code}"
     print(f"🔗 Generated short URL: {short_url}")
     return templates.TemplateResponse(
         "index.html", 

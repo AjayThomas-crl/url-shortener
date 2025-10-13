@@ -46,3 +46,13 @@ ENV/
 
 # Output files from application
 app/output_files/
+
+# Docker
+.dockerignore
+
+# AWS
+.aws/
+*.pem
+
+# Configuration
+config.ini

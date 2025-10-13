@@ -17,8 +17,16 @@ if not DATABASE_URL:  # Fallback for local development
     db = config.get('DATABASE', 'DATABASE')
     DATABASE_URL = f"postgresql://{user}:{password}@{host}/{db}"
 
-# Create engine
-engine = create_engine(DATABASE_URL)
+# Handle different PostgreSQL URL formats
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
+
+# Create engine with better connection settings
+engine = create_engine(
+    DATABASE_URL,
+    pool_pre_ping=True,
+    pool_recycle=3600
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
