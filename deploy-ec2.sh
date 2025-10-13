@@ -32,14 +32,35 @@ if [[ $EUID -eq 0 ]]; then
    exit 1
 fi
 
-# Update system packages
+# Detect OS and update system packages
 print_status "Updating system packages..."
-sudo yum update -y
+if command -v apt &> /dev/null; then
+    # Ubuntu/Debian
+    sudo apt update -y
+    PACKAGE_MANAGER="apt"
+elif command -v yum &> /dev/null; then
+    # Amazon Linux/CentOS
+    sudo yum update -y
+    PACKAGE_MANAGER="yum"
+else
+    print_error "Unsupported operating system"
+    exit 1
+fi
 
 # Install Docker if not present
 if ! command -v docker &> /dev/null; then
     print_status "Installing Docker..."
-    sudo yum install -y docker
+    if [ "$PACKAGE_MANAGER" = "apt" ]; then
+        # Ubuntu/Debian Docker installation
+        sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        sudo apt update
+        sudo apt install -y docker-ce
+    else
+        # Amazon Linux/CentOS
+        sudo yum install -y docker
+    fi
     sudo service docker start
     sudo usermod -a -G docker $USER
     sudo systemctl enable docker
@@ -60,7 +81,11 @@ fi
 # Install Nginx
 if ! command -v nginx &> /dev/null; then
     print_status "Installing Nginx..."
-    sudo yum install -y nginx
+    if [ "$PACKAGE_MANAGER" = "apt" ]; then
+        sudo apt install -y nginx
+    else
+        sudo yum install -y nginx
+    fi
     sudo systemctl enable nginx
 else
     print_status "Nginx is already installed"
