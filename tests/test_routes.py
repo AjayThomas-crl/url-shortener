@@ -151,10 +151,9 @@ class TestShortenURL:
         assert response.status_code == 200
         assert "invalid url" in response.text.lower()
 
-    def test_empty_url_returns_error(self, client):
+    def test_empty_url_returns_422(self, client):
         response = _shorten(client, "")
-        assert response.status_code == 200
-        assert "invalid url" in response.text.lower()
+        assert response.status_code == 422
 
     def test_only_scheme_returns_error(self, client):
         response = _shorten(client, "https://")

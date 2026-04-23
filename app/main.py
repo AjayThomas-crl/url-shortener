@@ -17,13 +17,13 @@ models.Base.metadata.create_all(bind=engine)
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
-# Include router
-app.include_router(router)
-
 # Health check endpoint for AWS monitoring
 @app.get("/health")
 def health_check():
     return {"status": "healthy", "service": "url-shortener"}
+
+# Include router (must come after /health to avoid /{short_code} catching /health)
+app.include_router(router)
 
 if __name__ == "__main__":
     import uvicorn

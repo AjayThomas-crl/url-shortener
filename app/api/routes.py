@@ -20,17 +20,14 @@ def generate_code(length=6):
 @router.get("/", response_class=HTMLResponse)
 def homepage(request: Request):
     print("🏠 Serving homepage")
-    return templates.TemplateResponse("index.html", {"request": request, "short_url": None})
+    return templates.TemplateResponse(request, "index.html", {"short_url": None})
 
 # 2. Admin route - MOVE THIS BEFORE the {short_code} route
 @router.get("/admin", response_class=HTMLResponse)
 def admin_dashboard(request: Request, db: Session = Depends(get_db)):
     print("👑 Accessing admin dashboard")
     urls = db.query(URL).all()
-    return templates.TemplateResponse(
-        "admin.html", 
-        {"request": request, "urls": urls}
-    )
+    return templates.TemplateResponse(request, "admin.html", {"urls": urls})
 
 # 3. QR code route - MOVE THIS BEFORE the {short_code} route
 @router.get("/qr/{short_code}")
@@ -100,8 +97,7 @@ def shorten_url(
     except ValueError:
         print("❌ URL validation failed")
         return templates.TemplateResponse(
-            "index.html", 
-            {"request": request, "error": "Invalid URL format", "short_url": None}
+            request, "index.html", {"error": "Invalid URL format", "short_url": None}
         )
 
     print("✅ URL validation successful")
@@ -114,12 +110,8 @@ def shorten_url(
         if existing:
             print(f"❌ Custom code already exists: {custom_code}")
             return templates.TemplateResponse(
-                "index.html", 
-                {
-                    "request": request, 
-                    "error": "Custom code already in use. Please try another.", 
-                    "short_url": None
-                }
+                request, "index.html",
+                {"error": "Custom code already in use. Please try another.", "short_url": None}
             )
         short_code = custom_code
         print(f"✅ Custom code available: {short_code}")
@@ -156,16 +148,15 @@ def shorten_url(
         print(f"❌ Database error: {str(e)}")
         db.rollback()
         return templates.TemplateResponse(
-            "index.html", 
-            {"request": request, "error": f"Database error: {str(e)}", "short_url": None}
+            request, "index.html",
+            {"error": f"Database error: {str(e)}", "short_url": None}
         )
     
     base_url = str(request.base_url).rstrip('/')
     short_url = f"{base_url}/{short_code}"
     print(f"🔗 Generated short URL: {short_url}")
     return templates.TemplateResponse(
-        "index.html", 
-        {"request": request, "short_url": short_url, "short_code": short_code}
+        request, "index.html", {"short_url": short_url, "short_code": short_code}
     )
 
 # 5. Generic short code route - THIS SHOULD BE LAST
@@ -183,8 +174,7 @@ def redirect_to_original(request: Request, short_code: str, db: Session = Depend
     if url.expires_at and datetime.now() > url.expires_at:
         print(f"⏱️ Link has expired: {short_code}")
         return templates.TemplateResponse(
-            "expired.html",
-            {"request": request, "message": "This link has expired."}
+            request, "expired.html", {"message": "This link has expired."}
         )
     
     # Increment click counter
